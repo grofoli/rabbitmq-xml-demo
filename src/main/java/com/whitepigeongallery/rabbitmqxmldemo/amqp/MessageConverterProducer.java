@@ -1,5 +1,6 @@
 package com.whitepigeongallery.rabbitmqxmldemo.amqp;
 
+import generated.Shiporder;
 import org.springframework.amqp.support.converter.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.Marshaller;
@@ -27,15 +28,14 @@ public class MessageConverterProducer {
         final Map<String, MessageConverter> delegatesConverters = new HashMap<>();
         delegatesConverters.put("text/plain", new SimpleMessageConverter());
         delegatesConverters.put("application/json", new Jackson2JsonMessageConverter());
-  //      delegatesConverters.put("application/xml",
-  //              new MarshallingMessageConverter(xmlMessageConverter()));
-        delegatesConverters.put("application/xml", new SimpleMessageConverter());
+        delegatesConverters.put("application/xml",
+                new MarshallingMessageConverter(xmlMessageConverter()));
         return delegatesConverters;
     }
 
     private Marshaller xmlMessageConverter() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setSchema(new ClassPathResource("xsd/ShipOrder.xsd"));
+        marshaller.setClassesToBeBound(Shiporder.class, Shiporder.Shipto.class);
         return marshaller;
     }
 }

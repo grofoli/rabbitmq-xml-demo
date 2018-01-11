@@ -2,9 +2,9 @@ package com.whitepigeongallery.rabbitmqxmldemo.rest;
 
 
 import generated.Shiporder;
-import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.support.converter.MessageConverter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,24 +21,22 @@ public class HelloWorldEndpoint {
 	@Inject
 	private RabbitAdmin rabbitAdmin;
 
+	@Inject
+	private MessageConverter messageConverter;
+
 	@GET
 	@Produces("text/plain")
 	public Response doGet() {
 		rabbitAdmin.initialize();
 		rabbitAdmin.declareQueue(new Queue("shipping"));
 		final Shiporder shiporder = createShipping();
-		Message message = MessageBuilder.withBody(serialize(shiporder))
-				.setContentType(MessageProperties.CONTENT_TYPE_XML)
-				.setMessageId("123")
-				.setHeader("bar", "baz")
-				.build();
-		rabbitAdmin.getRabbitTemplate().send("shipping", message);
-		return Response.ok("Hello from WildFly Swarm!").build();
+		final MessageProperties messageProperties = new MessageProperties();
+		messageProperties.setContentType(MessageProperties.CONTENT_TYPE_XML);
+		final Message msg = messageConverter.toMessage(shiporder, messageProperties);
+		rabbitAdmin.getRabbitTemplate().send("shipping", msg);
+		return Response.ok("Message sent!").build();
 	}
 
-	private byte[] serialize(Shiporder shiporder) {
-		return SerializationUtils.serialize(shiporder);
-	}
 
 	private Shiporder createShipping() {
 		final Shiporder shiporder = new Shiporder();

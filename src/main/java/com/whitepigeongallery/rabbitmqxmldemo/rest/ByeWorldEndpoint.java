@@ -2,9 +2,9 @@ package com.whitepigeongallery.rabbitmqxmldemo.rest;
 
 
 import generated.Shiporder;
-import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.support.converter.MessageConverter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,16 +21,15 @@ public class ByeWorldEndpoint {
     @Inject
     private RabbitAdmin rabbitAdmin;
 
+    @Inject
+    private MessageConverter messageConverter;
+
     @GET
     @Produces("text/plain")
     public Response doGet() {
         rabbitAdmin.initialize();
-        Message message = rabbitAdmin.getRabbitTemplate().receive("shipping");
-        Shiporder shiporder = SerializationUtils.deserialize(message.getBody());
-        return Response.ok(shiporder.getOrderperson()).build();
-    }
 
-    private byte[] serialize(Shiporder shiporder) {
-        return SerializationUtils.serialize(shiporder);
+        Object message = rabbitAdmin.getRabbitTemplate().receiveAndConvert("shipping");
+        return Response.ok(message.toString()).build();
     }
 }
