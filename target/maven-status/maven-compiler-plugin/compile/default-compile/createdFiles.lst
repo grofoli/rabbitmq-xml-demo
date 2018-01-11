@@ -1,0 +1,10 @@
+generated/Shiporder$Shipto.class
+com/whitepigeongallery/rabbitmqxmldemo/amqp/RabbitAdminProducer.class
+com/whitepigeongallery/rabbitmqxmldemo/amqp/ConnectionFactoryProducer.class
+org/w3/_2001/xmlschema/Adapter1.class
+com/whitepigeongallery/rabbitmqxmldemo/rest/ByeWorldEndpoint.class
+com/whitepigeongallery/rabbitmqxmldemo/amqp/MessageConverterProducer.class
+generated/ObjectFactory.class
+generated/Shiporder$Item.class
+generated/Shiporder.class
+com/whitepigeongallery/rabbitmqxmldemo/rest/HelloWorldEndpoint.class

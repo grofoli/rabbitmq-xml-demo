@@ -1,61 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.whitepigeongallery</groupId>
-  <artifactId>rabbitmq-xml-demo</artifactId>
-  <name>WildFly Swarm Example</name>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.whitepigeongallery</groupId>
+    <artifactId>rabbitmq-xml-demo</artifactId>
+    <name>WildFly Swarm Example</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
-  <properties>
-    <version.wildfly.swarm>2017.12.1</version.wildfly.swarm>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <version.wildfly.swarm>2017.12.1</version.wildfly.swarm>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bom-all</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <finalName>demo</finalName>
+        <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <xjbSources>
+                        <xjbSource>src/main/resources/xsd/bindings/global.xjb</xjbSource>
+                    </xjbSources>
+                    <sources>
+                        <source>src/main/resources/xsd/ShipOrder.xsd</source>
+                    </sources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-plugin</artifactId>
+                <version>${version.wildfly.swarm}</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>bom-all</artifactId>
-        <version>${version.wildfly.swarm}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>2.0.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>4.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.0.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.0.1.RELEASE</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
     </dependencies>
-  </dependencyManagement>
-
-  <build>
-    <finalName>demo</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.wildfly.swarm}</version>
-        
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <!-- Java EE 7 dependency -->
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>7.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- WildFly Swarm Fractions -->
-    
-  </dependencies>
 </project>
